@@ -4,220 +4,446 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Awarded Bids Formatter v2.0</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1a1a1a;
+            --primary-hover: #333333;
+            --secondary: #666666;
+            --background: #fafafa;
+            --surface: #ffffff;
+            --surface-alt: #f5f5f5;
+            --text-primary: #1a1a1a;
+            --text-secondary: #666666;
+            --text-muted: #999999;
+            --border: #e0e0e0;
+            --success: #2d7d32;
+            --error: #d32f2f;
+            --warning: #f57c00;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            margin: 20px;
-            color: #333;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--background);
+            min-height: 100vh;
+            color: var(--text-primary);
+            font-size: 14px;
+            line-height: 1.5;
+            overflow-x: hidden;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1200px;
             margin: 0 auto;
-            background: white;
-            border: 2px solid #1e3a5f;
-            padding: 0;
+            padding: 2rem;
         }
 
         .header {
-            background-color: #1e3a5f;
-            color: white;
-            padding: 20px;
             text-align: center;
-            border-bottom: 4px solid #f7931e;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .header::before {
+            display: none;
         }
 
         .header h1 {
-            margin: 0;
-            font-size: 24px;
-            font-weight: bold;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
         }
 
         .header p {
-            margin: 5px 0 0 0;
-            font-size: 14px;
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            font-weight: 300;
         }
 
-        .content {
-            padding: 20px;
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+            transition: box-shadow 0.2s ease;
         }
 
-        .section {
-            margin-bottom: 30px;
-            border: 1px solid #ccc;
-            background: #fafafa;
+        .card::before {
+            display: none;
         }
 
-        .section-header {
-            background-color: #1e3a5f;
+        .card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background: var(--surface-alt);
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .step-number {
+            background: var(--primary);
             color: white;
-            padding: 10px 15px;
-            margin: 0;
-            font-size: 16px;
-            font-weight: bold;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.875rem;
         }
 
-        .section-content {
-            padding: 15px;
+        .card-content {
+            padding: 2rem;
         }
 
         .instructions {
-            background-color: #fff3cd;
-            border: 1px solid #f7931e;
-            padding: 10px;
-            margin-bottom: 15px;
+            background: var(--surface-alt);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .instructions::before {
+            content: '💡';
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            font-size: 1.25rem;
         }
 
         .instructions p {
-            margin: 5px 0;
+            margin-left: 2rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
         }
 
-        .download-link {
-            color: #f7931e;
-            text-decoration: underline;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .download-link:hover {
-            color: #e5821a;
+        .instructions strong {
+            color: var(--text-primary);
         }
 
         #dataInput {
             width: 100%;
-            height: 200px;
-            font-family: "Courier New", monospace;
-            font-size: 12px;
-            border: 2px inset #ccc;
-            padding: 10px;
-            background: white;
+            height: 250px;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-size: 13px;
+            background: var(--surface);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            color: var(--text-primary);
+            resize: vertical;
+            transition: border-color 0.2s ease;
         }
 
         #dataInput:focus {
-            border-color: #f7931e;
             outline: none;
+            border-color: var(--primary);
+        }
+
+        #dataInput::placeholder {
+            color: var(--text-muted);
         }
 
         .button-row {
-            text-align: center;
-            margin: 15px 0;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0;
+            flex-wrap: wrap;
         }
 
-        button {
-            background-color: #f7931e;
+        .btn {
+            background: var(--primary);
             color: white;
-            border: 2px outset #f7931e;
-            padding: 8px 20px;
-            font-size: 14px;
-            font-weight: bold;
+            border: none;
+            padding: 0.875rem 2rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border-radius: 6px;
             cursor: pointer;
-            margin: 0 5px;
+            transition: background-color 0.2s ease;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            min-height: 44px;
         }
 
-        button:hover {
-            background-color: #e5821a;
+        .btn::before {
+            display: none;
         }
 
-        button:active {
-            border: 2px inset #f7931e;
+        .btn:hover::before {
+            display: none;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--surface-light), var(--surface));
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #059669);
+        }
+
+        .btn-success:hover {
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-upload {
+            background: linear-gradient(135deg, var(--secondary), #d97706);
+            position: relative;
+        }
+
+        .btn-upload:hover {
+            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.3);
+        }
+
+        #fileInput {
+            display: none;
         }
 
         #outputPreview {
-            background: white;
-            border: 2px inset #ccc;
-            padding: 15px;
-            min-height: 300px;
-            font-family: Arial, sans-serif;
-            font-size: 13px;
-            line-height: 1.4;
+            background: var(--background);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            min-height: 400px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
             white-space: pre-wrap;
             overflow-y: auto;
+            color: var(--text-primary);
+            position: relative;
+        }
+
+        #outputPreview:empty::before {
+            content: 'Your beautifully formatted output will appear here...';
+            color: var(--text-muted);
+            font-style: italic;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
         }
 
         .status {
-            margin: 10px 0;
-            padding: 8px;
-            border: 1px solid;
+            margin: 1rem 0;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
             text-align: center;
-            font-weight: bold;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .status.success {
-            background-color: #d4edda;
-            color: #155724;
-            border-color: #c3e6cb;
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .status.success::before {
+            content: '✅';
         }
 
         .status.error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border-color: #f5c6cb;
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--error);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .status.error::before {
+            content: '❌';
         }
 
         .hidden {
             display: none;
         }
 
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin: 10px 0;
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .card-content {
+                padding: 1.5rem;
+            }
+
+            .button-row {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+
+            #dataInput {
+                height: 200px;
+            }
+
+            .header h1 {
+                font-size: 2.5rem;
+            }
         }
 
-        th, td {
-            border: 1px solid #ccc;
-            padding: 5px;
-            text-align: left;
-            font-size: 11px;
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
         }
 
-        th {
-            background-color: #1e3a5f;
-            color: white;
-            font-weight: bold;
+        ::-webkit-scrollbar-track {
+            background: var(--surface);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
+        /* Animations */
+        .card {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .card:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .card:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Output formatting */
+        #outputPreview strong {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        #outputPreview br + strong {
+            margin-top: 0.5rem;
+            display: inline-block;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>Awarded Bids Formatter v 2.0</h1>
-            <p>Convert Excel data to email-ready format</p>
+            <h1>Awarded Bids Formatter</h1>
+            <p>Transform Excel data into beautiful, email-ready formats</p>
         </div>
         
-        <div class="content">
-            <div class="section">
-                <div class="section-header">Step 1: Input Data</div>
-                <div class="section-content">
-                    <div class="instructions">
-                        <p><strong>Instructions:</strong> Copy data from Excel and paste below. Include the header row. Or upload the Excel file. Use the format that Dashboard exports (but delete the top merged row first so that actual headers are now in the top row).</p>
-                    </div>
-                    
-                    <textarea id="dataInput" placeholder="Paste your data here...
+        <div class="card">
+            <div class="card-header">
+                <h2><span class="step-number">1</span>Input Data</h2>
+            </div>
+            <div class="card-content">
+                <div class="instructions">
+                    <p><strong>Instructions:</strong> Copy data from Excel and paste below. Include the header row. Or upload the Excel file. Use the format that Dashboard exports (but delete the top merged row first so that actual headers are now in the top row).</p>
+                </div>
+                
+                <textarea id="dataInput" placeholder="Paste your data here..."></textarea>
 
+                <div class="button-row">
+                    <button class="btn" onclick="processData()">
+                        <span>✨</span> Process Data
+                    </button>
+                    <button class="btn btn-secondary" onclick="clearAll()">
+                        <span>🗑️</span> Clear All
+                    </button>
+                    <label for="fileInput" class="btn btn-upload">
+                        <span>📊</span> Upload Spreadsheet
+                    </label>
+                    <input type="file" id="fileInput" accept=".xlsx" onchange="handleFile(event)">
+                </div>
 
-
-"></textarea>
-
-<div class="button-row">
-    <button onclick="processData()">Process Data</button>
-    <button onclick="clearAll()">Clear All</button>
-
-    <!-- Upload button (styled like a button) -->
-    <label for="fileInput" style="display:inline-block;background:#f7931e;color:#fff;border:2px outset #f7931e;padding:8px 20px;font-size:14px;font-weight:bold;cursor:pointer;margin:0 5px;">
-        Upload Spreadsheet
-    </label>
-    <input type="file" id="fileInput" accept=".xlsx" style="display:none;" onchange="handleFile(event)">
-</div>
-            
-            <div class="section">
-                <div class="section-header">Step 2: Formatted Output</div>
-                <div class="section-content">
-                    <div id="outputPreview">Your formatted output will appear here...</div>
-                    <div class="button-row">
-                        <button onclick="copyToClipboard()">Copy to Clipboard</button>
-                    </div>
+                <div id="status" class="status hidden"></div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h2><span class="step-number">2</span>Formatted Output</h2>
+            </div>
+            <div class="card-content">
+                <div id="outputPreview"></div>
+                <div class="button-row">
+                    <button class="btn btn-success" onclick="copyToClipboard()">
+                        <span>📋</span> Copy to Clipboard
+                    </button>
                 </div>
             </div>
         </div>
@@ -225,22 +451,6 @@
 
     <script>
         let processedData = '';
-
-        function downloadTemplate() {
-            const csvContent = "Local,Public Body,Project Name,Bid Award Amount,Bid Award Contractor,Project Street,Tentative Start Date\nLOCAL 225,Mount Prospect Park District,Lions Recreation Center Abatement,$198950.00,KIM CONSTRUCTION COMPANY INC,411 South Maple Street Mount Prospect IL 60056,9/4/25";
-            
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            link.setAttribute('href', url);
-            link.setAttribute('download', 'Awarded_Bids_Template.csv');
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            showStatus('Template downloaded!', 'success');
-        }
 
         function showStatus(message, type) {
             const status = document.getElementById('status');
@@ -417,7 +627,7 @@
 
         function clearAll() {
             document.getElementById('dataInput').value = '';
-            document.getElementById('outputPreview').innerHTML = 'Your formatted output will appear here...';
+            document.getElementById('outputPreview').innerHTML = '';
             processedData = '';
             showStatus('Data cleared.', 'success');
         }
@@ -431,34 +641,33 @@
         });
     </script>
     
-<!-- SheetJS (small, MIT license) -->
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<script>
-function handleFile(evt) {
-    const file = evt.target.files[0];
-    if (!file) return;
+    <!-- SheetJS (small, MIT license) -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script>
+        function handleFile(evt) {
+            const file = evt.target.files[0];
+            if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = function (e) {
-        try {
-            const workbook = XLSX.read(e.target.result, { type: 'binary' });
-            const sheetName = workbook.SheetNames[0];
-            const sheet = workbook.Sheets[sheetName];
-            // Convert to 2-D array (each row is an array of cells)
-            const json = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: "" });
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    const workbook = XLSX.read(e.target.result, { type: 'binary' });
+                    const sheetName = workbook.SheetNames[0];
+                    const sheet = workbook.Sheets[sheetName];
+                    // Convert to 2-D array (each row is an array of cells)
+                    const json = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: "" });
 
-            // Re-create TSV string for existing parser
-            const tsv = json.map(row => row.join('\t')).join('\n');
-            document.getElementById('dataInput').value = tsv;
-            processData();          // reuse current logic
-        } catch (err) {
-            showStatus('Error reading file.', 'error');
-            console.error(err);
+                    // Re-create TSV string for existing parser
+                    const tsv = json.map(row => row.join('\t')).join('\n');
+                    document.getElementById('dataInput').value = tsv;
+                    processData();          // reuse current logic
+                } catch (err) {
+                    showStatus('Error reading file.', 'error');
+                    console.error(err);
+                }
+            };
+            reader.readAsBinaryString(file);
         }
-    };
-    reader.readAsBinaryString(file);
-}
-</script>
-    
+    </script>
 </body>
 </html>
