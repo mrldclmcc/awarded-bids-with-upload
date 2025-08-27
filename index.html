@@ -503,7 +503,7 @@
                     .map(cols => ({
                         local: cols[idx.local]?.replace(/^LOCAL\s*/i, '').trim() || '',
                         publicBody: cols[idx.publicBody]?.trim() || '',
-                        projectName: cols[idx.projectName]?.trim() || '',
+                        projectName: trimProjectName(cols[idx.projectName]?.trim() || ''),
                         awardAmount: cols[idx.awardAmount]?.trim() || '',
                         contractor: cols[idx.contractor]?.trim() || '',
                         location: cols[idx.location]?.trim() || '',
@@ -525,6 +525,19 @@
                 showStatus('Error processing data. Check format.', 'error');
                 console.error('Processing error:', error);
             }
+        }
+
+        function trimProjectName(name) {
+            if (!name) return '';
+            const slashIndex = name.indexOf('/');
+            if (slashIndex !== -1) {
+                name = name.substring(slashIndex + 1).trim();
+            }
+            const idIndex = name.indexOf('(Project ID');
+            if (idIndex !== -1) {
+                name = name.substring(0, idIndex).trim();
+            }
+            return name;
         }
 
         function formatDate(dateStr) {
@@ -572,10 +585,16 @@
                 const projects = groupedProjects[local];
                 
                 projects.forEach((project, projectIndex) => {
+                    const formattedAmount = new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'USD',
+                        minimumFractionDigits: 2,
+                    }).format(project.awardAmount);
+
                     output += `<strong>Local:</strong> LOCAL ${project.local}<br>`;
                     output += `<strong>Public Body:</strong> ${project.publicBody}<br>`;
                     output += `<strong>Project:</strong> ${project.projectName}<br>`;
-                    output += `<strong>Award Amount:</strong> ${project.awardAmount}<br>`;
+                    output += `<strong>Award Amount:</strong> ${formattedAmount}<br>`;
                     output += `<strong>Awarded Contractor:</strong> ${project.contractor}<br>`;
                     output += `<strong>Project Location:</strong> ${project.location}<br>`;
                     output += `<strong>Estimated Start Date:</strong> ${project.startDate}<br>`;
@@ -641,7 +660,6 @@
         });
     </script>
     
-    <!-- SheetJS (small, MIT license) -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script>
         function handleFile(evt) {
